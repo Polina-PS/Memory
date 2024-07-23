@@ -1,0 +1,252 @@
+
+* {
+  box-sizing: border-box;
+}
+
+
+html, body {
+  height: 100%;
+}
+
+
+body {
+  background: rgb(251, 219, 175);
+  min-height: 100%;
+  font-family: "Arial", sans-serif;
+}
+
+
+.wrap {
+  display: flex;
+  position: relative;
+  height: 100%;
+  min-height: 500px;
+  padding-bottom: 20px;
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 240px;
+  height: 200px;
+  margin: 15px 5px auto 35px;
+  border: 5px solid rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255, 0.4);
+  align-items: center;
+  color: #4d4d4d;
+}
+
+.score {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  font-size: 3ch;
+  font-weight: bold;
+}
+
+.new_point {
+  padding-left: 10px;
+}
+
+h1 {
+  margin-top: 40px;
+  font-size: 1cm;
+  font-weight: bold;
+}
+
+.game {
+  transform-style: preserve-3d;
+  perspective: 500px;
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  margin-left: 240px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.card {
+  width: 135px;
+  height: 11%;
+  margin: 2px;
+  text-align: center;
+  perspective: 500px;
+  position: relative;
+  cursor: pointer;
+  z-index: 50;
+}
+
+/* настройки размера карт при максимальной ширине экрана 800 пикселей */
+@media (max-width: 800px) {
+  .card {
+    width: 25%;
+    height: 16.666%;
+  }
+}
+
+/* обратная сторона карточки */
+.card .inside {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-style: preserve-3d;
+  transition: 0.4s ease-in-out;
+  background: rgb(249,169,157);
+}
+
+
+.card .front, .card .back {
+  display: flex;
+  border: 3px solid rgb(255, 255, 255);
+  /* прячем обратную сторону */
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card .front .card-point {
+  width: 15%;
+  padding: 10px;
+  font-size: 0.6cm;
+  color: white;
+}
+
+.card .front img{
+  max-width: 85%;
+  margin: auto;
+  padding: 3px;
+  max-height: 100%;
+  position: relative;
+}
+
+.card .back {
+  background: rgb(249,169,157);
+  background: linear-gradient(338deg, rgba(249,169,157,1) 31%, rgba(249,173,91,1) 70%, rgba(255,244,120,1) 100%);
+}
+
+.card .front {
+  transform: rotateY(-180deg);
+}
+
+/* настройки при максимальной ширине экрана 800 пикселей */
+@media (max-width: 800px) {
+  .card .front {
+    padding: 5px;
+  }
+
+  .card .back {
+    padding: 10px;
+  }
+}
+
+  /* запускаем анимацию переворачивания */
+.card .inside.picked, .card .inside.matched {
+  transform: rotateY(180deg);
+}
+
+/* задаём ключевые кадры анимации совпадения */
+@keyframes matchAnim {
+  0% {
+    background: #bcffcc;
+  }
+  100% {
+    backgroud: white;
+  }
+}
+
+/* для движка WebKit */
+@-webkit-keyframes matchAnim {
+  0% {
+    background: #bcffcc;
+  }
+  100% {
+    background: white;
+  }
+}
+
+  /* анимация совпадения пары */
+.card .inside.matched {
+  -webkit-animation: 1s matchAnim ease-in-out;
+          animation: 1s matchAnim ease-in-out;
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+/* настройки затемнения при выводе модального окна */
+.modal-overlay {
+  /* на старте его не видно */
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* настройки модального окна */
+.modal {
+  display: none;
+  position: relative;
+  width: 400px;
+  height: 250px;
+  max-height: 90%;
+  max-width: 90%;
+  min-height: 180px;
+  margin: 0 auto;
+  border-radius: 10px;
+  background: rgb(255, 237, 205);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 30px 10px;
+}
+
+/* настройки шрифта сообщения о победе */
+.modal .winner {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 50px;
+  text-align: center;
+  color: #4d4d4d;
+}
+
+/* если ширина окна маленькая, делаем шрифт поменьше */
+@media (max-width: 480px) {
+  .modal .winner {
+    font-size: 60px;
+  }
+}
+
+/* настройки кнопки перезапуска игры */
+.modal .restart {
+  margin: 40px auto;
+  padding: 10px 30px;
+  display: block;
+  font-size: 30px;
+  border: none;
+  background: #818080;
+  background: linear-gradient(#4d4d4d, #222);
+  border: 1px solid #222;
+  border-radius: 5px;
+  color: white;
+  text-shadow: 0px 1px 0 black;
+  cursor: pointer;
+}
+
+/* меняем фон при наведении мышки на кнопку */
+.modal .restart:hover {
+  background: linear-gradient(#222, black);
+}
+
+/* выравниваем надписи на модальном окне по центру */
+.modal .message {
+  text-align: center;
+}
